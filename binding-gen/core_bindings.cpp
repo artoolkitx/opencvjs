@@ -140,6 +140,31 @@ namespace Utils{
         return  Mat(obj.inv(type));
     }
 
+
+    class MinMaxLoc
+    {
+    public:
+        double minVal;
+        double maxVal;
+        Point minLoc;
+        Point maxLoc;
+    };
+
+    MinMaxLoc minMaxLoc(const cv::Mat& src, const cv::Mat& mask)
+    {
+        MinMaxLoc result;
+        cv::minMaxLoc(src, &result.minVal, &result.maxVal, &result.minLoc, &result.maxLoc, mask);
+        return result;
+    }
+
+    MinMaxLoc minMaxLoc_1(const cv::Mat& src)
+    {
+        MinMaxLoc result;
+        cv::minMaxLoc(src, &result.minVal, &result.maxVal, &result.minLoc, &result.maxLoc);
+        return result;
+    }
+
+
 }
 
 EMSCRIPTEN_BINDINGS(Utils) {
@@ -159,6 +184,9 @@ EMSCRIPTEN_BINDINGS(Utils) {
     register_vector<cv::KeyPoint>("KeyPointVector");
     register_vector<cv::Rect>("RectVector");
     register_vector<cv::Point2f>("Point2fVector");
+    register_vector<cv::DMatch>("DMatchVector");
+    register_vector<std::vector<cv::DMatch>>("DMatchVectorVector");
+    register_vector<std::vector<char>>("CharVectorVector");
 
     emscripten::class_<cv::TermCriteria>("TermCriteria")
         .constructor<>()
@@ -251,7 +279,6 @@ EMSCRIPTEN_BINDINGS(Utils) {
         .element(&Size::height)
         .element(&Size::width);
 
-
     value_array<Point>("Point")
         .element(&Point::x)
         .element(&Point::y);
@@ -278,6 +305,16 @@ EMSCRIPTEN_BINDINGS(Utils) {
         .constructor<double, double, double, double>()
         .class_function("all", &cv::Scalar_<double>::all)
         .function("isReal", select_overload<bool()const>(&cv::Scalar_<double>::isReal));
+
+    emscripten::value_object<Utils::MinMaxLoc>("MinMaxLoc")
+        .field("minVal", &Utils::MinMaxLoc::minVal)
+        .field("maxVal", &Utils::MinMaxLoc::maxVal)
+        .field("minLoc", &Utils::MinMaxLoc::minLoc)
+        .field("maxLoc", &Utils::MinMaxLoc::maxLoc);
+
+    function("minMaxLoc", select_overload<Utils::MinMaxLoc(const cv::Mat&, const cv::Mat&)>(&Utils::minMaxLoc));
+
+    function("minMaxLoc", select_overload<Utils::MinMaxLoc(const cv::Mat&)>(&Utils::minMaxLoc_1));
 
     function("matFromArray", &Utils::matFromArray);
 
