@@ -12,6 +12,7 @@ opencv_hdr_list = [
 "../opencv/Modules/flann/include/opencv2/flann.hpp",
 "../opencv/Modules/flann/include/opencv2/flann/miniflann.hpp",
 "../opencv/Modules/ml/include/opencv2/ml.hpp",
+"../opencv/Modules/ml/include/opencv2/calib3d.hpp",
 "../opencv/Modules/photo/include/opencv2/photo.hpp",
 "../opencv/Modules/imgproc/include/opencv2/imgproc.hpp",
 "../opencv/Modules/shape/include/opencv2/shape.hpp",
